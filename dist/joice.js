@@ -1,3 +1,297 @@
+/*global global, module*/
+(function() {
+    "use strict";
+
+    var isNode = ((typeof(process) === "object") && (typeof(process.versions) === "object") && (typeof(process.versions.node) !== "undefined"));
+    if (isNode) {
+        global.namespace = function() { return module.exports; };
+    }
+    else if (!window.namespace) {
+        window.namespace = function(ns) {
+            if ((ns === undefined) || (ns === null) || ((typeof (ns) !== "string") && (!(ns instanceof String)))) {
+                return window;
+            }
+            
+            ns = (ns instanceof String ? ns.toString() : ns);
+            var parts = ns.split(".");
+            var current = window;
+            for (var index = 0; index < parts.length; index++) {
+                if ((current[parts[index]] === undefined) || (current[parts[index]] === null)) {
+                    current = current[parts[index]] = {};
+                }
+                else {
+                    current = current[parts[index]];
+                }
+                
+                current.__namespace = true;
+            }
+            
+            return current;
+        };
+    }
+}());
+(function() {
+    "use strict";
+
+    String.format = function(format) {
+        if ((format === undefined) || (format === null)) {
+            return format;
+        }
+        
+        var parameters = [];
+        for (var index = 1; index < arguments.length; index++) {
+            parameters.push(((arguments[index] === undefined) || (arguments[index] === null) ? "" : arguments[index].toString())
+                .replace(/(\{|\})/g, function (match) { return "_\\" + match; }));
+        }
+        
+        var result = format.replace(/(\{\{\d\}\}|\{\d\})/g, function (match) {
+            if (match.substr(0, 2) === "{{") {
+                return match;
+            }
+            
+            var index = parseInt(match.substr(1, match.length - 2));
+            return parameters[index];
+        });
+        
+        return result.replace(/(_\\\{|_\\\})/g, function (match) {
+            return match.substr(2, 1);
+        });
+    };
+}());
+/*global joice*/
+(function() {
+    "use strict";
+    Object.defineProperty(Function.prototype, ":", { enumerable: false, configurable: false, value: function(superClass) {
+        var givenClass = this;
+        for (var property in superClass) {
+            if (superClass.hasOwnProperty(property)) {
+                givenClass[property] = superClass[property];
+            }
+        }
+            
+        function SuperClassAlias() {
+            this.constructor = givenClass;
+        }
+
+        SuperClassAlias.prototype = superClass.prototype;
+        givenClass.prototype = new SuperClassAlias();
+        return givenClass;
+    } });
+    Object.defineProperty(Function, "requiresArgument", { enumerable: false, configurable: false, value: function(argumentName, argumentValue, argumentType) {
+        if (argumentValue === undefined) {
+            throw new joice.ArgumentException(argumentName);
+        }
+            
+        if (argumentValue === null) {
+            throw new joice.ArgumentNullException(argumentName);
+        }
+            
+        if (!argumentType) {
+            return;
+        }
+            
+        if (!Function.is(argumentValue, argumentType)) {
+            throw new joice.ArgumentOutOfRangeException(argumentName);
+        }
+    } });
+    Object.defineProperty(Function, "requiresOptionalArgument", { enumerable: false, configurable: false, value: function(argumentName, argumentValue, argumentType) {
+        if ((argumentValue !== undefined) && (argumentValue !== null) && (argumentType) && (!Function.is(argumentValue, argumentType))) {
+            throw new joice.ArgumentOutOfRangeException(argumentName);
+        }
+    } });
+    Object.defineProperty(Function, "is", { enumerable: false, configurable: false, value: function(instance, type) {
+        if (!type) {
+            return true;
+        }
+            
+        if (typeof (type) === "string") {
+            return (typeof (instance) === type);
+        }
+            
+        if (type instanceof Function) {
+            if ((instance === type) || (instance instanceof type) || ((instance.prototype) && (Function.is(instance.prototype, type)))) {
+                return true;
+            }
+                
+            if (Function.isInterface(type)) {
+                return Function.implements(instance, type);
+            }
+                
+            return false;
+        }
+            
+        return true;
+    } });
+    Object.defineProperty(Function, "implements", { enumerable: false, configurable: false, value: function(instance, $interface) {
+        for (var property in $interface) {
+            if ($interface.hasOwnProperty(property)) {
+                if (typeof (instance[property]) !== typeof ($interface[property])) {
+                    return false;
+                }
+            }
+        }
+            
+        return true;
+    } });
+    Object.defineProperty(Function, "isInterface", { enumerable: false, configurable: false, value: function(Type) {
+        try {
+            new Type();
+            return false;
+        }
+        catch (exception) {
+            return true;
+        }
+    } });
+}());
+/*global namespace*/
+(function (namespace) {
+    "use strict";
+
+    /**
+     * Represents a general exception.
+     * @memberof joice
+     * @name Exception
+     * @public
+     * @class
+     * @extends Error
+     * @param {string} message Message of the exception.
+     */
+    var Exception = (namespace.Exception = function(message) {
+        if (!this.message) {
+            this.message = message;
+        }
+
+        var error = Error.prototype.constructor.call(this, this.message);
+        error.name = this.name = this.constructor.toString();
+        Object.defineProperty(this, "stack", { get: function() { return error.stack; } });
+    })[":"](Error);
+    Exception.toString = function() { return "joice.Exception"; };
+}(namespace("joice")));
+/*global namespace*/
+(function(namespace) {
+    "use strict";
+    
+    /**
+     * An abstract of the type resolver.
+     * @memberof joice
+     * @name Resolver
+     * @public
+     * @abstract
+     * @class
+     */
+    var Resolver = namespace.Resolver = function() { };
+    /**
+     * Checks if the resolver is applicable for a given dependency name.
+     * @memberof joice.Resolver
+     * @public
+     * @instance
+     * @member {boolean} isApplicableTo
+     * @param {string} dependency Name of the dependency to check applicability.
+     */
+    Resolver.prototype.isApplicableTo = function(dependency) {
+        Function.requiresArgument("dependency", dependency, "string");
+        return false;
+    };
+    /**
+     * Resolves an instance of a given depedency.
+     * @memberof joice.Resolver
+     * @public
+     * @instance
+     * @member {boolean} resolve
+     * @param {string} dependency Name of the dependency to check applicability.
+     * @param {Array<string>} dependencyStack Stack of dependencies in current context.
+     */
+    Resolver.prototype.resolve = function(dependency, dependencyStack) {
+        Function.requiresArgument("dependency", dependency, "string");
+        Function.requiresArgument("dependencyStack", dependencyStack, Array);
+        return null;
+    };
+    /**
+     * Contains a reference to the owning container.
+     * @memberof joice.Resolver
+     * @protected
+     * @instance
+     * @member {joice.Container} container
+     */
+    Object.defineProperty(Resolver.prototype, "container", { enumerable: false, configurable: false, writable: true, value: null });
+    /**
+     * Removes occurances of given names from the dependency name.
+     * @memberof joice.Resolver
+     * @protected
+     * @instance
+     * @member {string} normalize
+     * @param {string} dependency Dependency name to be processed.
+     * @param {Array<string>} names Names to be removed from dependency name.
+     */
+    Object.defineProperty(Resolver.prototype, "normalize", { enumerable: false, configurable: false, writable: false, value: function(dependency, names) {
+        for (var nameIndex = 0; nameIndex < names.length; nameIndex++) {
+            var name = new RegExp(names[nameIndex]).exec(dependency);
+            if ((name !== null) && (name.length > 1)) {
+                dependency = name[1];
+                break;
+            }
+        }
+        
+        return dependency;
+        }
+    });
+    Resolver.toString = function() { return "joice.Resolver"; };
+}(namespace("joice")));
+/*global namespace, joice*/
+(function(namespace) {
+    "use strict";
+    
+    /**
+     * Defines an abstract of a service description facility.
+     * @memberof joice
+     * @name ServiceDescriptor
+     * @public
+     * @abstract
+     * @class
+     * @param {Function} serviceType Type of service to be registered.
+     */
+    var ServiceDescriptor = namespace.ServiceDescriptor = function(serviceType) {
+        Function.requiresArgument("serviceType", serviceType, Function);
+        this.serviceType = serviceType;
+        this.scope = joice.Scope.Transient;
+    };
+    Object.defineProperty(ServiceDescriptor.prototype, "serviceType", { enumerable: false, configurable: false, writable: true, value: null });
+    Object.defineProperty(ServiceDescriptor.prototype, "scope", { enumerable: false, configurable: false, writable: true, value: null });
+    /**
+     * Registers service implementations in the given container.
+     * @memberof joice
+     * @public
+     * @instance
+     * @member register
+     * @param {joice.Container} container Target container to register in.
+     */
+    ServiceDescriptor.prototype.register = function(container) {
+        Function.requiresArgument("container", container, joice.Container);
+    };
+    /**
+     * Defines a singleton scope of the instances being resolved for this registration.
+     * @memberof joice
+     * @public
+     * @instance
+     * @member {joice.ServiceDescriptor} lifestyleSingleton
+     */
+    ServiceDescriptor.prototype.lifestyleSingleton = function() {
+        this.scope = joice.Scope.Singleton;
+        return this;
+    };
+    /**
+     * Defines a transient scope of the instances being resolved for this registration.
+     * @memberof joice
+     * @public
+     * @instance
+     * @member {joice.ServiceDescriptor} lifestyleTransient
+     */
+    ServiceDescriptor.prototype.lifestyleTransient = function() {
+        this.scope = joice.Scope.Transient;
+        return this;
+    };
+    ServiceDescriptor.toString = function() { return "joice.ServiceDescriptor"; };
+}(namespace("joice")));
 /*global namespace, joice*/
 (function (namespace) {
     "use strict";
@@ -652,30 +946,6 @@
     };
     ConventionDescriptor.toString = function() { return "joice.ConventionDescriptor"; };
 }(namespace("joice")));
-/*global namespace*/
-(function (namespace) {
-    "use strict";
-
-    /**
-     * Represents a general exception.
-     * @memberof joice
-     * @name Exception
-     * @public
-     * @class
-     * @extends Error
-     * @param {string} message Message of the exception.
-     */
-    var Exception = (namespace.Exception = function(message) {
-        if (!this.message) {
-            this.message = message;
-        }
-
-        var error = Error.prototype.constructor.call(this, this.message);
-        error.name = this.name = this.constructor.toString();
-        Object.defineProperty(this, "stack", { get: function() { return error.stack; } });
-    })[":"](Error);
-    Exception.toString = function() { return "joice.Exception"; };
-}(namespace("joice")));
 /*global namespace, joice*/
 (function(namespace) {
     "use strict";
@@ -716,91 +986,6 @@
     };
     FactoryResolver.factoryIndicators = ["(.*)Factory$", "(.*)Factory$"];
 }(namespace("joice")));
-/*global joice*/
-(function() {
-    "use strict";
-    Object.defineProperty(Function.prototype, ":", { enumerable: false, configurable: false, value: function(superClass) {
-        var givenClass = this;
-        for (var property in superClass) {
-            if (superClass.hasOwnProperty(property)) {
-                givenClass[property] = superClass[property];
-            }
-        }
-            
-        function SuperClassAlias() {
-            this.constructor = givenClass;
-        }
-
-        SuperClassAlias.prototype = superClass.prototype;
-        givenClass.prototype = new SuperClassAlias();
-        return givenClass;
-    } });
-    Object.defineProperty(Function, "requiresArgument", { enumerable: false, configurable: false, value: function(argumentName, argumentValue, argumentType) {
-        if (argumentValue === undefined) {
-            throw new joice.ArgumentException(argumentName);
-        }
-            
-        if (argumentValue === null) {
-            throw new joice.ArgumentNullException(argumentName);
-        }
-            
-        if (!argumentType) {
-            return;
-        }
-            
-        if (!Function.is(argumentValue, argumentType)) {
-            throw new joice.ArgumentOutOfRangeException(argumentName);
-        }
-    } });
-    Object.defineProperty(Function, "requiresOptionalArgument", { enumerable: false, configurable: false, value: function(argumentName, argumentValue, argumentType) {
-        if ((argumentValue !== undefined) && (argumentValue !== null) && (argumentType) && (!Function.is(argumentValue, argumentType))) {
-            throw new joice.ArgumentOutOfRangeException(argumentName);
-        }
-    } });
-    Object.defineProperty(Function, "is", { enumerable: false, configurable: false, value: function(instance, type) {
-        if (!type) {
-            return true;
-        }
-            
-        if (typeof (type) === "string") {
-            return (typeof (instance) === type);
-        }
-            
-        if (type instanceof Function) {
-            if ((instance === type) || (instance instanceof type) || ((instance.prototype) && (Function.is(instance.prototype, type)))) {
-                return true;
-            }
-                
-            if (Function.isInterface(type)) {
-                return Function.implements(instance, type);
-            }
-                
-            return false;
-        }
-            
-        return true;
-    } });
-    Object.defineProperty(Function, "implements", { enumerable: false, configurable: false, value: function(instance, $interface) {
-        for (var property in $interface) {
-            if ($interface.hasOwnProperty(property)) {
-                if (typeof (instance[property]) !== typeof ($interface[property])) {
-                    return false;
-                }
-            }
-        }
-            
-        return true;
-    } });
-    Object.defineProperty(Function, "isInterface", { enumerable: false, configurable: false, value: function(Type) {
-        try {
-            new Type();
-            return false;
-        }
-        catch (exception) {
-            return true;
-        }
-    } });
-}());
 /*global namespace, joice*/
 (function(namespace) {
     "use strict";
@@ -986,76 +1171,6 @@
 /*global namespace*/
 (function(namespace) {
     "use strict";
-    
-    /**
-     * An abstract of the type resolver.
-     * @memberof joice
-     * @name Resolver
-     * @public
-     * @abstract
-     * @class
-     */
-    var Resolver = namespace.Resolver = function() { };
-    /**
-     * Checks if the resolver is applicable for a given dependency name.
-     * @memberof joice.Resolver
-     * @public
-     * @instance
-     * @member {boolean} isApplicableTo
-     * @param {string} dependency Name of the dependency to check applicability.
-     */
-    Resolver.prototype.isApplicableTo = function(dependency) {
-        Function.requiresArgument("dependency", dependency, "string");
-        return false;
-    };
-    /**
-     * Resolves an instance of a given depedency.
-     * @memberof joice.Resolver
-     * @public
-     * @instance
-     * @member {boolean} resolve
-     * @param {string} dependency Name of the dependency to check applicability.
-     * @param {Array<string>} dependencyStack Stack of dependencies in current context.
-     */
-    Resolver.prototype.resolve = function(dependency, dependencyStack) {
-        Function.requiresArgument("dependency", dependency, "string");
-        Function.requiresArgument("dependencyStack", dependencyStack, Array);
-        return null;
-    };
-    /**
-     * Contains a reference to the owning container.
-     * @memberof joice.Resolver
-     * @protected
-     * @instance
-     * @member {joice.Container} container
-     */
-    Object.defineProperty(Resolver.prototype, "container", { enumerable: false, configurable: false, writable: true, value: null });
-    /**
-     * Removes occurances of given names from the dependency name.
-     * @memberof joice.Resolver
-     * @protected
-     * @instance
-     * @member {string} normalize
-     * @param {string} dependency Dependency name to be processed.
-     * @param {Array<string>} names Names to be removed from dependency name.
-     */
-    Object.defineProperty(Resolver.prototype, "normalize", { enumerable: false, configurable: false, writable: false, value: function(dependency, names) {
-        for (var nameIndex = 0; nameIndex < names.length; nameIndex++) {
-            var name = new RegExp(names[nameIndex]).exec(dependency);
-            if ((name !== null) && (name.length > 1)) {
-                dependency = name[1];
-                break;
-            }
-        }
-        
-        return dependency;
-        }
-    });
-    Resolver.toString = function() { return "joice.Resolver"; };
-}(namespace("joice")));
-/*global namespace*/
-(function(namespace) {
-    "use strict";
 
     /**
      * Enumerates possible instance scopes.
@@ -1093,89 +1208,6 @@
     "use strict";
     
     /**
-     * Defines an abstract of a service description facility.
-     * @memberof joice
-     * @name ServiceDescriptor
-     * @public
-     * @abstract
-     * @class
-     * @param {Function} serviceType Type of service to be registered.
-     */
-    var ServiceDescriptor = namespace.ServiceDescriptor = function(serviceType) {
-        Function.requiresArgument("serviceType", serviceType, Function);
-        this.serviceType = serviceType;
-        this.scope = joice.Scope.Transient;
-    };
-    Object.defineProperty(ServiceDescriptor.prototype, "serviceType", { enumerable: false, configurable: false, writable: true, value: null });
-    Object.defineProperty(joice.Registration.prototype, "scope", { enumerable: false, configurable: false, writable: true, value: null });
-    /**
-     * Registers service implementations in the given container.
-     * @memberof joice
-     * @public
-     * @instance
-     * @member register
-     * @param {joice.Container} container Target container to register in.
-     */
-    ServiceDescriptor.prototype.register = function(container) {
-        Function.requiresArgument("container", container, joice.Container);
-    };
-    /**
-     * Defines a singleton scope of the instances being resolved for this registration.
-     * @memberof joice
-     * @public
-     * @instance
-     * @member {joice.ServiceDescriptor} lifestyleSingleton
-     */
-    ServiceDescriptor.prototype.lifestyleSingleton = function() {
-        this.scope = joice.Scope.Singleton;
-        return this;
-    };
-    /**
-     * Defines a transient scope of the instances being resolved for this registration.
-     * @memberof joice
-     * @public
-     * @instance
-     * @member {joice.ServiceDescriptor} lifestyleTransient
-     */
-    ServiceDescriptor.prototype.lifestyleTransient = function() {
-        this.scope = joice.Scope.Transient;
-        return this;
-    };
-    ServiceDescriptor.toString = function() { return "joice.ServiceDescriptor"; };
-}(namespace("joice")));
-(function() {
-    "use strict";
-
-    String.format = function(format) {
-        if ((format === undefined) || (format === null)) {
-            return format;
-        }
-        
-        var parameters = [];
-        for (var index = 1; index < arguments.length; index++) {
-            parameters.push(((arguments[index] === undefined) || (arguments[index] === null) ? "" : arguments[index].toString())
-                .replace(/(\{|\})/g, function (match) { return "_\\" + match; }));
-        }
-        
-        var result = format.replace(/(\{\{\d\}\}|\{\d\})/g, function (match) {
-            if (match.substr(0, 2) === "{{") {
-                return match;
-            }
-            
-            var index = parseInt(match.substr(1, match.length - 2));
-            return parameters[index];
-        });
-        
-        return result.replace(/(_\\\{|_\\\})/g, function (match) {
-            return match.substr(2, 1);
-        });
-    };
-}());
-/*global namespace, joice*/
-(function(namespace) {
-    "use strict";
-    
-    /**
      * Resolves types themselves.
      * @memberof joice
      * @name TypeResolver
@@ -1198,35 +1230,3 @@
     };
     TypeResolver.typeIndicators = ["(.*)Type$", "(.*)Types$"];
 }(namespace("joice")));
-/*global global, module*/
-(function() {
-    "use strict";
-
-    var isNode = ((typeof(process) === "object") && (typeof(process.versions) === "object") && (typeof(process.versions.node) !== "undefined"));
-    if (isNode) {
-        global.namespace = function() { return module.exports; };
-    }
-    else if (!window.namespace) {
-        window.namespace = function(ns) {
-            if ((ns === undefined) || (ns === null) || ((typeof (ns) !== "string") && (!(ns instanceof String)))) {
-                return window;
-            }
-            
-            ns = (ns instanceof String ? ns.toString() : ns);
-            var parts = ns.split(".");
-            var current = window;
-            for (var index = 0; index < parts.length; index++) {
-                if ((current[parts[index]] === undefined) || (current[parts[index]] === null)) {
-                    current = current[parts[index]] = {};
-                }
-                else {
-                    current = current[parts[index]];
-                }
-                
-                current.__namespace = true;
-            }
-            
-            return current;
-        };
-    }
-}());

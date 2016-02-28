@@ -40,7 +40,15 @@ module.exports = function (grunt) {
                 separator: "\r\n"
             },
             dist: {
-                src: ["src/{,*/}*.js"],
+                src: [
+                    "src/namespace.js",
+                    "src/StringExtensions.js",
+                    "src/FunctionExtensions.js",
+                    "src/Exception.js",
+                    "src/Resolver.js",
+                    "src/ServiceDescriptor.js",
+                    "src/{,*/}*.js"
+                ],
                 dest: "dist/joice.js"
             }
         },
@@ -64,9 +72,8 @@ module.exports = function (grunt) {
         },
         copy: {
             dist: {
-                files: [
-                    { src: ".build/package.json", dest: "dist/package.json" },
-                    { src: ["LICENSE", "README.md"], dest: "dist/" }]
+                src: ["package.json", "LICENSE", "README.md"],
+                dest: "dist/"
             }
         },
         karma: {

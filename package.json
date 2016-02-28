@@ -1,6 +1,22 @@
 {
     "name": "joice",
-    "version": "0.1.0",
+    "version": "0.1.2",
+    "description": "Light Inverse of Control for JavaScript.",
+    "keywords": [ "ioc", "container", "inverse of control" ],
+    "homepage": "https://github.com/alien-mcl/joice",
+    "bugs": { "url": "https://github.com/alien-mcl/joice/issues" },
+    "license": "BSD-3-Clause",
+    "author": {
+        "name": "Karol Szczepañski",
+        "email": "alien-mcl@users.noreply.github.com",
+        "url": "https://github.com/alien-mcl"
+    },
+    "files": [ "joice.min.js" ],
+    "main": "joice",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/alien-mcl/joice.git"
+    },
     "devDependencies": {
         "grunt": "^0.4.5",
         "grunt-contrib-clean": "^1.0.0",

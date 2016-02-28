@@ -17,7 +17,7 @@
         this.scope = joice.Scope.Transient;
     };
     Object.defineProperty(ServiceDescriptor.prototype, "serviceType", { enumerable: false, configurable: false, writable: true, value: null });
-    Object.defineProperty(joice.Registration.prototype, "scope", { enumerable: false, configurable: false, writable: true, value: null });
+    Object.defineProperty(ServiceDescriptor.prototype, "scope", { enumerable: false, configurable: false, writable: true, value: null });
     /**
      * Registers service implementations in the given container.
      * @memberof joice
