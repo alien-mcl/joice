@@ -1,7 +1,12 @@
-﻿(function() {
+﻿/*global global, module*/
+(function() {
     "use strict";
 
-    if (!window.namespace) {
+    var isNode = ((typeof(process) === "object") && (typeof(process.versions) === "object") && (typeof(process.versions.node) !== "undefined"));
+    if (isNode) {
+        global.namespace = function() { return module.exports; };
+    }
+    else if (!window.namespace) {
         window.namespace = function(ns) {
             if ((ns === undefined) || (ns === null) || ((typeof (ns) !== "string") && (!(ns instanceof String)))) {
                 return window;
