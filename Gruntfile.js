@@ -66,7 +66,6 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     { src: ".build/package.json", dest: "dist/package.json" },
-                    { src: ".build/bower.json", dest: "dist/bower.json" },
                     { src: ["LICENSE", "README.md"], dest: "dist/" }]
             }
         },

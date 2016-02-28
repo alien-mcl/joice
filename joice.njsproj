@@ -24,9 +24,7 @@
     <None Include="package.json" />
     <None Include="Gruntfile.js" />
     <Content Include=".build\package.json" />
-    <Content Include=".build\bower.json" />
     <Content Include="bower.json" />
-    <Content Include="dist\bower.json" />
     <Content Include="dist\joice.js" />
     <Content Include="dist\joice.min.js" />
     <Content Include="dist\LICENSE" />
