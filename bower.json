@@ -20,15 +20,24 @@
         "url": "https://github.com/alien-mcl/joice.git"
     },
     "ignore": [
-        "**/.*",
+        ".build",
+        "dist/joice.js",
+        "dist/LICENSE",
+        "dist/package.json",
+        "dist/README.md",
         "node_modules",
         "bower_components",
+        "obj",
         "doc",
         "scripts",
         "src",
         "fixtures",
+        "testing",
         "tests",
         "Gruntfile.json",
-        "package.json"
+        "package.json",
+        ".jshintrc",
+        "joice.sln",
+        "joice.njsproj"
     ]
 }
