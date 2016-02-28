@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{a9dc9332-25eb-4bc8-9cc4-daeec50e5482}</ProjectGuid>
+    <ProjectHome>.\</ProjectHome>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Folder Include="dist\" />
+    <Folder Include="scripts\" />
+    <None Include="scripts\_references.js" />
+    <None Include=".jshintrc" />
+    <None Include="package.json" />
+    <None Include="Gruntfile.js" />
+    <Content Include="dist\joice.js" />
+    <Content Include="dist\joice.min.js" />
+    <Content Include="LICENSE" />
+    <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="doc\" />
+    <Folder Include="doc\fonts\" />
+    <Folder Include="doc\img\" />
+    <Folder Include="doc\scripts\" />
+    <Folder Include="doc\scripts\prettify\" />
+    <Folder Include="doc\styles\" />
+    <Content Include="doc\scripts\docstrap.lib.js" />
+    <Content Include="doc\scripts\fulltext-search-ui.js" />
+    <Content Include="doc\scripts\fulltext-search.js" />
+    <Content Include="doc\scripts\lunr.min.js" />
+    <Content Include="doc\scripts\prettify\jquery.min.js" />
+    <Content Include="doc\scripts\prettify\lang-css.js" />
+    <Content Include="doc\scripts\prettify\prettify.js" />
+    <Content Include="doc\scripts\sunlight.js" />
+    <Content Include="doc\scripts\toc.js" />
+    <Content Include="doc\classes.list.html" />
+    <Content Include="doc\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="doc\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="doc\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="doc\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="doc\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="doc\img\glyphicons-halflings-white.png" />
+    <Content Include="doc\img\glyphicons-halflings.png" />
+    <Content Include="doc\index.html" />
+    <Content Include="doc\joice.ArgumentException.html" />
+    <Content Include="doc\joice.ArgumentNullException.html" />
+    <Content Include="doc\joice.ArgumentOutOfRangeException.html" />
+    <Content Include="doc\joice.ArrayResolver.html" />
+    <Content Include="doc\joice.Classes.html" />
+    <Content Include="doc\joice.Component.html" />
+    <Content Include="doc\joice.ComponentDescriptor.html" />
+    <Content Include="doc\joice.Container.html" />
+    <Content Include="doc\joice.ConventionDescriptor.html" />
+    <Content Include="doc\joice.Exception.html" />
+    <Content Include="doc\joice.IComponentFactory.html" />
+    <Content Include="doc\joice.InstanceResolver.html" />
+    <Content Include="doc\joice.InvalidOperationException.html" />
+    <Content Include="doc\joice.Registration.html" />
+    <Content Include="doc\joice.RegistrationsCollection.html" />
+    <Content Include="doc\joice.Resolver.html" />
+    <Content Include="doc\joice.Scope.html" />
+    <Content Include="doc\joice.ServiceDescriptor.html" />
+    <Content Include="doc\joice.TypeResolver.html" />
+    <Content Include="doc\quicksearch.html" />
+    <Content Include="doc\scripts\prettify\Apache-License-2.0.txt" />
+    <Content Include="doc\styles\darkstrap.css" />
+    <Content Include="doc\styles\prettify-tomorrow.css" />
+    <Content Include="doc\styles\site.cerulean.css" />
+    <Content Include="doc\styles\site.cosmo.css" />
+    <Content Include="doc\styles\site.cyborg.css" />
+    <Content Include="doc\styles\site.darkly.css" />
+    <Content Include="doc\styles\site.darkstrap.css" />
+    <Content Include="doc\styles\site.dibs-bootstrap.css" />
+    <Content Include="doc\styles\site.flatly.css" />
+    <Content Include="doc\styles\site.journal.css" />
+    <Content Include="doc\styles\site.lumen.css" />
+    <Content Include="doc\styles\site.paper.css" />
+    <Content Include="doc\styles\site.readable.css" />
+    <Content Include="doc\styles\site.sandstone.css" />
+    <Content Include="doc\styles\site.simplex.css" />
+    <Content Include="doc\styles\site.slate.css" />
+    <Content Include="doc\styles\site.spacelab.css" />
+    <Content Include="doc\styles\site.superhero.css" />
+    <Content Include="doc\styles\site.united.css" />
+    <Content Include="doc\styles\site.yeti.css" />
+    <Content Include="doc\styles\sunlight.dark.css" />
+    <Content Include="doc\styles\sunlight.default.css" />
+    <Content Include="doc\ursa.FactoryResolver.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\" />
+    <Compile Include="src\namespace.js" />
+    <Compile Include="src\FunctionExtensions.js" />
+    <Compile Include="src\StringExtensions.js" />
+    <Compile Include="src\Exception.js" />
+    <Compile Include="src\ArgumentException.js" />
+    <Compile Include="src\ArgumentNullException.js" />
+    <Compile Include="src\ArgumentOutOfRangeException.js" />
+    <Compile Include="src\InvalidOperationException.js" />
+    <Compile Include="src\Scope.js" />
+    <Compile Include="src\Registration.js" />
+    <Compile Include="src\RegistrationsCollection.js" />
+    <Compile Include="src\ServiceDescriptor.js" />
+    <Compile Include="src\ComponentDescriptor.js" />
+    <Compile Include="src\ConventionDescriptor.js" />
+    <Compile Include="src\Component.js" />
+    <Compile Include="src\Classes.js" />
+    <Compile Include="src\IComponentFactory.js" />
+    <Compile Include="src\Resolver.js" />
+    <Compile Include="src\FactoryResolver.js" />
+    <Compile Include="src\TypeResolver.js" />
+    <Compile Include="src\ArrayResolver.js" />
+    <Compile Include="src\InstanceResolver.js" />
+    <Compile Include="src\Container.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="fixtures\" />
+    <Folder Include="testing\" />
+    <Folder Include="tests\" />
+    <None Include="tests\.jshintrc" />
+    <None Include="tests\karma.conf.js" />
+    <Compile Include="fixtures\ioc.js" />
+    <Compile Include="testing\toBeOfType.js" />
+    <Compile Include="tests\RegistrationsCollection.js" />
+    <Compile Include="tests\Component.js" />
+    <Compile Include="tests\Container.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
