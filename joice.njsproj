@@ -17,13 +17,18 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Folder Include="dist\" />
+    <Folder Include=".build\" />
     <Folder Include="scripts\" />
     <None Include="scripts\_references.js" />
     <None Include=".jshintrc" />
     <None Include="package.json" />
     <None Include="Gruntfile.js" />
+    <Content Include=".build\package.json" />
     <Content Include="dist\joice.js" />
     <Content Include="dist\joice.min.js" />
+    <Content Include="dist\LICENSE" />
+    <Content Include="dist\package.json" />
+    <Content Include="dist\README.md" />
     <Content Include="LICENSE" />
     <Content Include="README.md" />
   </ItemGroup>
