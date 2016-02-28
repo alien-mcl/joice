@@ -5,11 +5,13 @@
     "keywords": [ "ioc", "container", "inverse of control" ],
     "homepage": "https://github.com/alien-mcl/joice",
     "license": "BSD-3-Clause",
-    "authors": [{
-        "name": "Karol Szczepański",
-        "email": "alien-mcl@users.noreply.github.com",
-        "homepage": "https://github.com/alien-mcl"
-    }],
+    "authors": [
+        {
+            "name": "Karol Szczepański",
+            "email": "alien-mcl@users.noreply.github.com",
+            "homepage": "https://github.com/alien-mcl"
+        }
+    ],
     "main": [ "dist/joice.min.js" ],
     "moduleType": [
         "globals",
@@ -20,25 +22,7 @@
         "url": "https://github.com/alien-mcl/joice.git"
     },
     "ignore": [
-        "**/.*",
-        ".build",
-        "dist/joice.js",
-        "dist/LICENSE",
-        "dist/package.json",
-        "dist/README.md",
-        "node_modules",
-        "bower_components",
-        "obj",
-        "doc",
-        "scripts",
-        "src",
-        "fixtures",
-        "testing",
-        "tests",
-        "Gruntfile.json",
-        "package.json",
-        ".jshintrc",
-        "joice.sln",
-        "joice.njsproj"
+        "/*",
+        "!dist/*"
     ]
 }
