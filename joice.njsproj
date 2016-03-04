@@ -108,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+    <Content Include="dist\grunt-joice-annotate.js" />
+    <Content Include="dist\joice-annotate.js" />
     <Compile Include="fixtures\task.js" />
     <Compile Include="build\grunt-joice-annotate.js" />
     <Compile Include="build\joice-annotate.js" />

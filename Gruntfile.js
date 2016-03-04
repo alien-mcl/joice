@@ -62,7 +62,7 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     "dist/joice.min.js": ["dist/joice.js"]
-                }
+}
             }
         },
         jsdoc: {
@@ -78,8 +78,16 @@ module.exports = function(grunt) {
         },
         copy: {
             dist: {
-                src: ["package.json", "LICENSE", "README.md"],
-                dest: "dist/"
+                files: [{
+                    src: ["package.json", "LICENSE", "README.md"],
+                    dest: "dist/"
+                }, {
+                    src: ["build/grunt-joice-annotate.js"],
+                    dest: "dist/grunt-joice-annotate.js"
+                }, {
+                    src: ["build/joice-annotate.js"],
+                    dest: "dist/joice-annotate.js"
+                }]
             }
         },
         karma: {
