@@ -1,6 +1,6 @@
 {
     "name": "joice",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Light Inverse of Control for JavaScript.",
     "keywords": [ "ioc", "container", "inverse of control" ],
     "homepage": "https://github.com/alien-mcl/joice",
