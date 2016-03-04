@@ -12,11 +12,16 @@
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <EnableTypeScript>true</EnableTypeScript>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Folder Include="dist\" />
+    <Folder Include="build\" />
+    <Folder Include="typings\" />
     <Folder Include="scripts\" />
     <None Include="scripts\_references.js" />
     <None Include=".jshintrc" />
@@ -103,6 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+    <Compile Include="fixtures\task.js" />
+    <Compile Include="build\grunt-joice-annotate.js" />
+    <Compile Include="build\joice-annotate.js" />
     <Compile Include="src\namespace.js" />
     <Compile Include="src\FunctionExtensions.js" />
     <Compile Include="src\StringExtensions.js" />
@@ -135,9 +143,13 @@
     <None Include="tests\karma.conf.js" />
     <Compile Include="fixtures\ioc.js" />
     <Compile Include="testing\toBeOfType.js" />
+    <Compile Include="tests\Annotate.js" />
     <Compile Include="tests\RegistrationsCollection.js" />
     <Compile Include="tests\Component.js" />
     <Compile Include="tests\Container.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="typings\joice.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->

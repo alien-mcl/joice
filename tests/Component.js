@@ -1,5 +1,5 @@
 ﻿/// <reference path="../scripts/_references.js" />
-//ReSharperReporter.prototype.jasmineDone = function () { };
+//ReSharperReporter.prototype.jasmineDone = function() { };
 /*global jasmine, matchers, joice*/
 (function() {
     "use strict";
@@ -8,14 +8,14 @@
         var registration;
         beforeEach(function() {
             jasmine.addMatchers(matchers);
-            registration = joice.Component.for(joice.Service).implementedBy(joice.Implementation);
+            registration = joice.Component.for(joice.tests.Service).implementedBy(joice.tests.Implementation);
         });
         
         describe("when creating a registration", function() {
             it("should be created correctly", function() {
-                expect(registration.serviceType).toBe(joice.Service);
-                expect(registration._implementationType).toBe(joice.Implementation);
-                expect(registration._name).toBe(joice.Implementation.toString());
+                expect(registration.serviceType).toBe(joice.tests.Service);
+                expect(registration._implementationType).toBe(joice.tests.Implementation);
+                expect(registration._name).toBe(joice.tests.Implementation.toString());
                 expect(registration.scope).toBe(joice.Scope.Transient);
             });
             it("should use a given name", function() {

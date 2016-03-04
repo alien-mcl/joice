@@ -41,10 +41,10 @@
         var parameters = [];
         for (var index = 1; index < arguments.length; index++) {
             parameters.push(((arguments[index] === undefined) || (arguments[index] === null) ? "" : arguments[index].toString())
-                .replace(/(\{|\})/g, function (match) { return "_\\" + match; }));
+                .replace(/(\{|\})/g, function(match) { return "_\\" + match; }));
         }
         
-        var result = format.replace(/(\{\{\d\}\}|\{\d\})/g, function (match) {
+        var result = format.replace(/(\{\{\d\}\}|\{\d\})/g, function(match) {
             if (match.substr(0, 2) === "{{") {
                 return match;
             }
@@ -53,7 +53,7 @@
             return parameters[index];
         });
         
-        return result.replace(/(_\\\{|_\\\})/g, function (match) {
+        return result.replace(/(_\\\{|_\\\})/g, function(match) {
             return match.substr(2, 1);
         });
     };
@@ -104,8 +104,8 @@
             return true;
         }
             
-        if (typeof (type) === "string") {
-            return (typeof (instance) === type);
+        if (typeof(type) === "string") {
+            return (typeof(instance) === type);
         }
             
         if (type instanceof Function) {
@@ -144,7 +144,7 @@
     } });
 }());
 /*global namespace*/
-(function (namespace) {
+(function(namespace) {
     "use strict";
 
     /**
@@ -165,6 +165,7 @@
         error.name = this.name = this.constructor.toString();
         Object.defineProperty(this, "stack", { get: function() { return error.stack; } });
     })[":"](Error);
+    namespace.Exception.dependencies = ["message"];
     Exception.toString = function() { return "joice.Exception"; };
 }(namespace("joice")));
 /*global namespace*/
@@ -255,6 +256,7 @@
         this.serviceType = serviceType;
         this.scope = joice.Scope.Transient;
     };
+    namespace.ServiceDescriptor.dependencies = ["serviceType"];
     Object.defineProperty(ServiceDescriptor.prototype, "serviceType", { enumerable: false, configurable: false, writable: true, value: null });
     Object.defineProperty(ServiceDescriptor.prototype, "scope", { enumerable: false, configurable: false, writable: true, value: null });
     /**
@@ -293,7 +295,7 @@
     ServiceDescriptor.toString = function() { return "joice.ServiceDescriptor"; };
 }(namespace("joice")));
 /*global namespace, joice*/
-(function (namespace) {
+(function(namespace) {
     "use strict";
 
     /**
@@ -312,6 +314,7 @@
         
         joice.Exception.prototype.constructor.call(this, this.message);
     })[":"](joice.Exception);
+    namespace.ArgumentException.dependencies = ["argumentName"];
     ArgumentException.toString = function() { return "joice.ArgumentException"; };
 }(namespace("joice")));
 /*global namespace, joice*/
@@ -334,6 +337,7 @@
         
         joice.ArgumentException.prototype.constructor.call(this, this.message);
     })[":"](joice.ArgumentException);
+    namespace.ArgumentNullException.dependencies = ["argumentName"];
     ArgumentNullException.toString = function() { return "joice.ArgumentNullException"; };
 }(namespace("joice")));
 /*global namespace, joice*/
@@ -356,6 +360,7 @@
         
         joice.ArgumentException.prototype.constructor.call(this, this.message);
     })[":"](joice.ArgumentException);
+    namespace.ArgumentOutOfRangeException.dependencies = ["argumentName"];
     ArgumentOutOfRangeException.toString = function() { return "joice.ArgumentOutOfRangeException"; };
 }(namespace("joice")));
 /*global namespace, joice*/
@@ -371,7 +376,7 @@
      * @extends joice.Resolver
      */
     var ArrayResolver = (namespace.ArrayResolver = function() { })[":"](joice.Resolver);
-    ArrayResolver.prototype.isApplicableTo = function (dependency) {
+    ArrayResolver.prototype.isApplicableTo = function(dependency) {
         joice.Resolver.prototype.isApplicableTo.apply(this, arguments);
         var normalizedDependency = this.normalize.call(this, dependency, ArrayResolver.arrayIndicators);
         return (normalizedDependency !== dependency);
@@ -417,8 +422,7 @@
      */
     Classes.implementing = function(type) {
         Function.requiresArgument("type", type, Function);
-        var result = new joice.ConventionDescriptor(type);
-        result._implementationTypes = _Classes.resolve.call(this, type, window, [], 0);
+        var result = new joice.ConventionDescriptor(type, _Classes.resolve.call(this, type, window, [], 0));
         return result;
     };
     /**
@@ -500,7 +504,7 @@
      * @member {joice.ComponentDescriptor} for
      * @param {Function} type Type of the service for which the registration is being defined.
      */
-    Component.for = function (type) {
+    Component.for = function(type) {
         Function.requiresArgument("type", type, Function);
         return new joice.ComponentDescriptor(type);
     };
@@ -602,8 +606,8 @@
             this.serviceType,
             (this._factoryMethod !== null ? this._factoryMethod : (this._instance || this._implementationType)),
             this._factoryMethod !== null,
-            this.scope,
-            this._name);
+            this._name,
+            this.scope);
         container.register(registration);
     };
     ComponentDescriptor.toString = function() { return "joice.ComponentDescriptor"; };
@@ -773,7 +777,7 @@
      */
     Object.defineProperty(Container.prototype, "findType", { enumerable: false, configurable: false, writeable: false, value: function(dependency) {
         dependency = dependency.toLowerCase();
-        var result = _Container.findTypeByNames.call(this, dependency, function (registration) {
+        var result = _Container.findTypeByNames.call(this, dependency, function(registration) {
             var typeNames = [registration._name];
             if ((registration._implementationType !== null) && (typeNames[0] !== registration._implementationType.toString())) {
                 typeNames.push(registration._implementationType.toString());
@@ -785,7 +789,7 @@
             return result;
         }
             
-        return _Container.findTypeByNames.call(this, dependency, function (registration) { return [registration._serviceType.toString()]; });
+        return _Container.findTypeByNames.call(this, dependency, function(registration) { return [registration._serviceType.toString()]; });
     } });
     /**
      * Searches registration for a given service name.
@@ -931,12 +935,14 @@
      * @public
      * @class
      * @param {Function} serviceType Type of service to be registered.
+     * @param {Array<Function>} [implementationTypes] Implementation types.
      * @extends joice.ServiceDescriptor
      */
-    var ConventionDescriptor = (namespace.ConventionDescriptor = function() {
+    var ConventionDescriptor = (namespace.ConventionDescriptor = function(serviceType, implementationTypes) {
         joice.ServiceDescriptor.prototype.constructor.apply(this, arguments);
-        this._implementationTypes = null;
+        this._implementationTypes = (implementationTypes instanceof Array ? implementationTypes : null);
     })[":"](joice.ServiceDescriptor);
+    namespace.ConventionDescriptor.dependencies = ["serviceType", "implementationTypes"];
     Object.defineProperty(ConventionDescriptor.prototype, "_implementationTypes", { enumerable: false, configurable: false, writable: true, value: null });
     ConventionDescriptor.prototype.register = function(container) {
         joice.ServiceDescriptor.prototype.register.apply(this, arguments);
@@ -1002,9 +1008,9 @@
     var IComponentFactory = namespace.IComponentFactory = function() {
         throw new joice.InvalidOperationException("Cannot instantiate interface joice.IComponentFactory.");
     };
-    IComponentFactory.resolve = function () { };
-    IComponentFactory.resolveAll = function () { };
-    IComponentFactory.toString = function () { return "joice.IComponentFactory"; };
+    IComponentFactory.resolve = function() { };
+    IComponentFactory.resolveAll = function() { };
+    IComponentFactory.toString = function() { return "joice.IComponentFactory"; };
 }(namespace("joice")));
 /*global namespace, joice*/
 (function(namespace) {
@@ -1026,7 +1032,7 @@
         normalizedDependency = this.normalize.call(this, normalizedDependency, joice.FactoryResolver.factoryIndicators);
         return (normalizedDependency === dependency);
     };
-    InstanceResolver.prototype.resolve = function (dependency, dependencyStack) {
+    InstanceResolver.prototype.resolve = function(dependency, dependencyStack) {
         var argumentRegistration = this.container.findType(dependency);
         if (argumentRegistration !== null) {
             return this.container.resolveInternal(argumentRegistration, dependencyStack);
@@ -1048,10 +1054,10 @@
      * @extends joice.Exception
      * @param {string} message Message of the exception.
      */
-    var InvalidOperationException = (namespace.InvalidOperationException = function () {
+    var InvalidOperationException = (namespace.InvalidOperationException = function() {
         joice.Exception.prototype.constructor.apply(this, arguments);
     })[":"](joice.Exception);
-    InvalidOperationException.toString = function () { return "joice.InvalidOperationException"; };
+    InvalidOperationException.toString = function() { return "joice.InvalidOperationException"; };
 }(namespace("joice")));
 /*global namespace, joice*/
 (function(namespace) {
@@ -1068,31 +1074,19 @@
      * @param {Function} serviceType Type of service to be registered.
      * @param {Function|object} implementation Class implementing a service or an instance to be used as implementation.
      * @param {boolean} [implementationIsFactoryMethod] Flag indicating whether the implementation is not a class but a factory method.
-     * @param {joice.Scope} [scope] Instance lifestyle.
      * @param {string} [name] Name of the implementation.
+     * @param {joice.Scope} [scope] Instance lifestyle.
      */
-    var Registration = namespace.Registration = function(serviceType, implementation, implementationIsFactoryMethod, scope, name) {
+    var Registration = namespace.Registration = function(serviceType, implementation) {
         Function.requiresArgument("serviceType", serviceType, Function);
         Function.requiresArgument("implementation", implementation);
-        Function.requiresOptionalArgument("implementationIsFactoryMethod", implementationIsFactoryMethod, "boolean");
-        Function.requiresOptionalArgument("scope", scope, joice.Scope);
-        Function.requiresOptionalArgument("name", name, "string");
-        if ((!(implementation instanceof Function)) && (typeof (implementation) !== "object")) {
+        if ((!(implementation instanceof Function)) && (typeof(implementation) !== "object")) {
             throw new joice.ArgumentOutOfRangeException("implementation");
         }
-        
-        implementationIsFactoryMethod = (typeof (implementationIsFactoryMethod) === "boolean" ? implementationIsFactoryMethod : false);
-        this._serviceType = serviceType;
-        this._implementationType = (implementation instanceof Function ? (implementationIsFactoryMethod ? null : implementation) : implementation.prototype);
-        this._instance = (implementation instanceof Function ? null : implementation);
-        this._factoryMethod = ((implementation instanceof Function) && (implementationIsFactoryMethod) ? implementation : null);
-        this._scope = scope || joice.Scope.Transient;
-        this._name = (this._factoryMethod !== null ? name : (name || this._implementationType.toString()));
-        this._dependencies = [];
-        if (this._factoryMethod === null) {
-            _Registration.initialize.call(this);
-        }
+
+        _Registration.ctor.call(this, _Registration.setupArguments.apply(this, arguments));
     };
+    namespace.Registration.dependencies = ["serviceType", "implementation"];
     Object.defineProperty(Registration.prototype, "_serviceType", { enumerable: false, configurable: false, writable: true, value: null });
     Object.defineProperty(Registration.prototype, "_implementationType", { enumerable: false, configurable: false, writable: true, value: null });
     Object.defineProperty(Registration.prototype, "_instance", { enumerable: false, configurable: false, writable: true, value: null });
@@ -1101,11 +1095,90 @@
     Object.defineProperty(Registration.prototype, "_name", { enumerable: false, configurable: false, writable: true, value: null });
     Object.defineProperty(Registration.prototype, "_dependencies", { enumerable: false, configurable: false, writable: true, value: null });
     Registration.toString = function() { return "joice.Registration"; };
+    _Registration.setupArguments = function(serviceType) {
+        var args = { serviceType: serviceType };
+        for (var index = 1; index < arguments.length; index++) {
+            var argument = arguments[index];
+            if ((argument === undefined) || (argument === null)) {
+                continue;
+            }
+            
+            if (argument instanceof joice.Scope) {
+                args.scope = argument;
+            }
+            else if (typeof (argument) === "string") {
+                args.name = argument;
+            }
+            else if (typeof (argument) === "boolean") {
+                if ((argument) && (args.implementationType)) {
+                    args.factoryMethod = args.implementationType;
+                    delete args.implementationType;
+                }
+            }
+            else if (argument instanceof Function) {
+                args[args.implementationIsFactoryMethod ? "factoryMethod" : "implementationType"] = argument;
+            }
+            else if (typeof (argument) === "object") {
+                args.instance = argument;
+            }
+        }
+
+        return args;
+    };
+    _Registration.ctor = function(args) {
+        if (args.instance) {
+            _Registration.createInstanceImplementation.call(this, args.serviceType, args.instance, args.name, args.scope);
+        }
+        else if (args.factoryMethod) {
+            _Registration.createFactoryMethod.call(this, args.serviceType, args.factoryMethod, args.name, args.scope);
+        }
+        else if (args.implementationType) {
+            _Registration.createImplementationType.call(this, args.serviceType, args.implementationType, args.name, args.scope);
+        }
+        else {
+            throw new joice.InvalidOperationException("Parameters provided are not suitable to create a joice.Registration instance.");
+        }
+
+        this._dependencies = [];
+        if (this._factoryMethod === null) {
+            _Registration.initialize.call(this);
+        }
+    };
+    _Registration.createImplementationType = function(serviceType, implementation, name, scope) {
+        this._serviceType = serviceType;
+        this._implementationType = implementation;
+        this._instance = null;
+        this._factoryMethod = null;
+        this._name = (name || this._implementationType.toString());
+        this._scope = scope || joice.Scope.Transient;
+    };
+    _Registration.createFactoryMethod = function(serviceType, factoryMethod, name, scope) {
+        Function.requiresArgument("name", name, "string");
+        this._serviceType = serviceType;
+        this._implementationType = null;
+        this._instance = null;
+        this._factoryMethod = factoryMethod;
+        this._name = name;
+        this._scope = scope || joice.Scope.Transient;
+    };
+    _Registration.createInstanceImplementation = function(serviceType, instance, name, scope) {
+        this._serviceType = serviceType;
+        this._implementationType = instance.prototype;
+        this._instance = instance;
+        this._factoryMethod = null;
+        this._name = (name || this._implementationType.toString());
+        this._scope = scope || joice.Scope.Transient;
+    };
     _Registration.initialize = function() {
         var index;
         if ((this._implementationType.dependencies) && (this._implementationType.dependencies instanceof Array)) {
             for (index = 0; index < this._implementationType.dependencies.length; index++) {
-                this.dependencies.push(this._implementationType.dependencies[index]);
+                var dependency = this._implementationType.dependencies[index].trim();
+                if (dependency.length === 0) {
+                    continue;
+                }
+
+                this._dependencies.push(dependency);
             }
         }
         else {
@@ -1126,7 +1199,7 @@
     };
 }(namespace("joice")));
 /*global namespace, joice*/
-(function (namespace) {
+(function(namespace) {
 
     "use strict";
     /**
@@ -1141,6 +1214,7 @@
         Array.prototype.constructor.apply(this, Array.prototype.slice.call(arguments, 1));
         this._owner = owner || null;
     })[":"](Array);
+    namespace.RegistrationsCollection.dependencies = ["owner"];
     Object.defineProperty(RegistrationsCollection.prototype, "_owner", { enumerable: false, configurable: false, writable: true, value: null });
     /**
      * Returns an index matching given criteria or -1.
@@ -1184,6 +1258,7 @@
         Function.requiresArgument("name", name, "string");
         this.toString = function() { return name; };
     };
+    namespace.Scope.dependencies = ["name"];
     Scope.toString = function() { return "joice.Scope"; };
 
     /**

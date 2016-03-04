@@ -1,5 +1,5 @@
 ﻿/*global namespace*/
-(function (namespace) {
+(function(namespace) {
     "use strict";
 
     /**

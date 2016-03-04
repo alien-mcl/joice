@@ -21,6 +21,8 @@
 /// <reference path="../src/InstanceResolver.js" />
 /// <reference path="../src/IComponentFactory.js" />
 /// <reference path="../src/Container.js" />
+/// <reference path="../build/joice-annotate.js" />
 
 /// <reference path="../fixtures/ioc.js" />
+/// <reference path="../fixtures/task.js" />
 /// <reference path="../testing/toBeOfType.js" />

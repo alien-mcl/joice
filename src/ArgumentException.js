@@ -1,5 +1,5 @@
 ﻿/*global namespace, joice*/
-(function (namespace) {
+(function(namespace) {
     "use strict";
 
     /**

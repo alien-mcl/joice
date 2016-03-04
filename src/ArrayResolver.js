@@ -11,7 +11,7 @@
      * @extends joice.Resolver
      */
     var ArrayResolver = (namespace.ArrayResolver = function() { })[":"](joice.Resolver);
-    ArrayResolver.prototype.isApplicableTo = function (dependency) {
+    ArrayResolver.prototype.isApplicableTo = function(dependency) {
         joice.Resolver.prototype.isApplicableTo.apply(this, arguments);
         var normalizedDependency = this.normalize.call(this, dependency, ArrayResolver.arrayIndicators);
         return (normalizedDependency !== dependency);

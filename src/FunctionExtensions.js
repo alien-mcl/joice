@@ -44,8 +44,8 @@
             return true;
         }
             
-        if (typeof (type) === "string") {
-            return (typeof (instance) === type);
+        if (typeof(type) === "string") {
+            return (typeof(instance) === type);
         }
             
         if (type instanceof Function) {

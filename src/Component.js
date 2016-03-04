@@ -19,7 +19,7 @@
      * @member {joice.ComponentDescriptor} for
      * @param {Function} type Type of the service for which the registration is being defined.
      */
-    Component.for = function (type) {
+    Component.for = function(type) {
         Function.requiresArgument("type", type, Function);
         return new joice.ComponentDescriptor(type);
     };

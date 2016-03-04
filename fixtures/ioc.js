@@ -34,4 +34,8 @@
     var FactoryRequiring = namespace.FactoryRequiring = function(serviceFactory) { this.serviceFactory = serviceFactory; };
     FactoryRequiring.prototype.serviceFactory = null;
     FactoryRequiring.toString = function() { return "joice.FactoryRequiring"; };
-}(namespace("joice")));
+    var ImplicitDependencies = namespace.ImplicitDependencies = function(service) { this.service = service; };
+    ImplicitDependencies.prototype.service = null;
+    ImplicitDependencies.toString = function() { return "joice.ImplicitDependencies"; };
+    ImplicitDependencies.dependencies = ["service"];
+}(namespace("joice.tests")));

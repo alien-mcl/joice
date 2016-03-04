@@ -25,8 +25,10 @@
             "../src/Component.js",
             "../src/Classes.js",
             "../src/Container.js",
+            "../build/joice-annotate.js",
             "../testing/toBeOfType.js",
             "../fixtures/ioc.js",
+            "../fixtures/task.js",
             "*.js"
         ],
         exclude: [

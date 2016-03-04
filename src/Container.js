@@ -163,7 +163,7 @@
      */
     Object.defineProperty(Container.prototype, "findType", { enumerable: false, configurable: false, writeable: false, value: function(dependency) {
         dependency = dependency.toLowerCase();
-        var result = _Container.findTypeByNames.call(this, dependency, function (registration) {
+        var result = _Container.findTypeByNames.call(this, dependency, function(registration) {
             var typeNames = [registration._name];
             if ((registration._implementationType !== null) && (typeNames[0] !== registration._implementationType.toString())) {
                 typeNames.push(registration._implementationType.toString());
@@ -175,7 +175,7 @@
             return result;
         }
             
-        return _Container.findTypeByNames.call(this, dependency, function (registration) { return [registration._serviceType.toString()]; });
+        return _Container.findTypeByNames.call(this, dependency, function(registration) { return [registration._serviceType.toString()]; });
     } });
     /**
      * Searches registration for a given service name.

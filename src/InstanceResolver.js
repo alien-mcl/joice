@@ -18,7 +18,7 @@
         normalizedDependency = this.normalize.call(this, normalizedDependency, joice.FactoryResolver.factoryIndicators);
         return (normalizedDependency === dependency);
     };
-    InstanceResolver.prototype.resolve = function (dependency, dependencyStack) {
+    InstanceResolver.prototype.resolve = function(dependency, dependencyStack) {
         var argumentRegistration = this.container.findType(dependency);
         if (argumentRegistration !== null) {
             return this.container.resolveInternal(argumentRegistration, dependencyStack);

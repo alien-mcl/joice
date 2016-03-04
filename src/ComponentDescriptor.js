@@ -94,8 +94,8 @@
             this.serviceType,
             (this._factoryMethod !== null ? this._factoryMethod : (this._instance || this._implementationType)),
             this._factoryMethod !== null,
-            this.scope,
-            this._name);
+            this._name,
+            this.scope);
         container.register(registration);
     };
     ComponentDescriptor.toString = function() { return "joice.ComponentDescriptor"; };

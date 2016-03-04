@@ -11,8 +11,8 @@
      * @extends joice.Exception
      * @param {string} message Message of the exception.
      */
-    var InvalidOperationException = (namespace.InvalidOperationException = function () {
+    var InvalidOperationException = (namespace.InvalidOperationException = function() {
         joice.Exception.prototype.constructor.apply(this, arguments);
     })[":"](joice.Exception);
-    InvalidOperationException.toString = function () { return "joice.InvalidOperationException"; };
+    InvalidOperationException.toString = function() { return "joice.InvalidOperationException"; };
 }(namespace("joice")));

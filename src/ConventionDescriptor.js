@@ -9,11 +9,12 @@
      * @public
      * @class
      * @param {Function} serviceType Type of service to be registered.
+     * @param {Array<Function>} [implementationTypes] Implementation types.
      * @extends joice.ServiceDescriptor
      */
-    var ConventionDescriptor = (namespace.ConventionDescriptor = function() {
+    var ConventionDescriptor = (namespace.ConventionDescriptor = function(serviceType, implementationTypes) {
         joice.ServiceDescriptor.prototype.constructor.apply(this, arguments);
-        this._implementationTypes = null;
+        this._implementationTypes = (implementationTypes instanceof Array ? implementationTypes : null);
     })[":"](joice.ServiceDescriptor);
     Object.defineProperty(ConventionDescriptor.prototype, "_implementationTypes", { enumerable: false, configurable: false, writable: true, value: null });
     ConventionDescriptor.prototype.register = function(container) {

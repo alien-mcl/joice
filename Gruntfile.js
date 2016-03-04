@@ -1,9 +1,9 @@
 /*global require, module*/
 "use strict";
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
     require("time-grunt")(grunt);
-    require("jit-grunt")(grunt);
+    require("jit-grunt")(grunt, { "joiceAnnotate": "build/grunt-joice-annotate.js" });
     grunt.initConfig({
         clean: {
             dist: {
@@ -52,6 +52,12 @@ module.exports = function (grunt) {
                 dest: "dist/joice.js"
             }
         },
+        joiceAnnotate: {
+            dist: {
+                src: ["dist/joice.js"],
+                dest: "dist/joice.js"
+            }
+        },
         uglify: {
             dist: {
                 files: {
@@ -94,6 +100,7 @@ module.exports = function (grunt) {
         "jshint:dist",
         "jshint:test",
         "concat:dist",
+        "joiceAnnotate:dist",
         "uglify:dist",
         "jsdoc:dist",
         "copy:dist"

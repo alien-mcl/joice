@@ -23,8 +23,7 @@
      */
     Classes.implementing = function(type) {
         Function.requiresArgument("type", type, Function);
-        var result = new joice.ConventionDescriptor(type);
-        result._implementationTypes = _Classes.resolve.call(this, type, window, [], 0);
+        var result = new joice.ConventionDescriptor(type, _Classes.resolve.call(this, type, window, [], 0));
         return result;
     };
     /**
